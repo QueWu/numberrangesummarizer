@@ -2,6 +2,7 @@ package numberrangesummarizer;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.lang.StringBuilder;
@@ -30,6 +31,7 @@ import java.lang.StringBuilder;
 	 public Collection<Integer> collect(String inStr) throws ClassCastException
 	 {
 		 ranges.clear();
+		 //ignore all non-numerical characters except commas.
 		 String[] strArr = inStr.replaceAll("[^0-9.,]+","").split(",");
 		 for(int i = 0; i < strArr.length; i++)
 		 {
@@ -48,49 +50,49 @@ import java.lang.StringBuilder;
 	 public String summarizeCollection(Collection<Integer> inColle) throws ClassCastException
 	 {
 		 StringBuilder mainStr = new StringBuilder("");
-		 Object[] intObjArr =  inColle.toArray();
-		 Arrays.sort(intObjArr, 0, intObjArr.length); //sort the array first.
+		 ArrayList<Integer> objArr  = new ArrayList<Integer>(inColle);
+		 objArr.sort(Comparator.naturalOrder()); //sort the array first.
 		 
 		 StringBuilder tray = new StringBuilder(""); //the "tray" is to facilitate the range in string form.
-		 for(int i = 0; i < intObjArr.length; i++)
+		 for(int i = 0; i < objArr.size(); i++)
 		 {
 			 //check if the two elements are sequential, then make the range. 
-			 if(i!=0 && (int)intObjArr[i]-(int)intObjArr[i-1]==1)
+			 if(i!=0 && objArr.get(i)-objArr.get(i-1)==1)
 			 {
 				 if(tray.toString().equals(""))
 				 {
-					 tray.append(intObjArr[i-1].toString()).append("-").append(intObjArr[i].toString());
+					 tray.append(objArr.get(i-1).toString()).append("-").append(objArr.get(i).toString());
 				 }
 				 else if(!tray.toString().equals(""))
 				 {
 					 //updates the maximum range.
-					 tray.replace(tray.indexOf("-")+1,tray.length(),intObjArr[i].toString());
+					 tray.replace(tray.indexOf("-")+1,tray.length(),objArr.get(i).toString());
 				 }
 				 //caters for end-of-array.
-				 if(i == intObjArr.length-1)
+				 if(i == objArr.size()-1)
 				 {
 					 mainStr.append(tray);
 				 }
 			 }
 			 //check if the two elements are not sequential, then drop it to the main string.
-			 else if(i!=0 && (int)intObjArr[i]-(int)intObjArr[i-1]!=1)
+			 else if(i!=0 && objArr.get(i)-objArr.get(i-1)!=1)
 			 {
 				 //drop the range string (tray) into the main string. 
-				 if(!tray.toString().equals("") && (int)intObjArr[i]-(int)intObjArr[i-1]!=0) //cater for duplicates
+				 if(!tray.toString().equals("") && objArr.get(i)-objArr.get(i-1)!=0) //cater for duplicates
 				 {
 					 mainStr.append(tray).append(", ");
 					 tray.setLength(0);
 				 }
-				 else if(tray.toString().equals("") && (int)intObjArr[i]-(int)intObjArr[i-1]!=0) //cater for duplicates
+				 else if(tray.toString().equals("") && objArr.get(i)-objArr.get(i-1)!=0) //cater for duplicates
 				 {
-					 mainStr.append(intObjArr[i-1].toString()).append(", ");
+					 mainStr.append(objArr.get(i-1).toString()).append(", ");
 				 }
 				 //caters for end-of-array.
-				 if(i == intObjArr.length-1)
+				 if(i == objArr.size()-1)
 				 {
 					 if(tray.toString().equals(""))
 					 {
-						 mainStr.append(intObjArr[i].toString());
+						 mainStr.append(objArr.get(i).toString());
 					 }
 					 else
 					 {
@@ -100,7 +102,7 @@ import java.lang.StringBuilder;
 			 }
 		 }
 		 
-		 //Arrays.stream(intObjArr).forEach(x->System.out.print(x+" ")); System.out.println();
+		 //Arrays.stream(objArr.toArray()).forEach(x->System.out.print(x+" ")); System.out.println();
 		 //System.out.println(mainStr);
 		 
 		 return mainStr.toString();
@@ -157,8 +159,7 @@ import java.lang.StringBuilder;
 		 
 		 obj.setRanges(obj.collect(rngStr));
 		 outStr2 = obj.summarizeCollection(obj.getRanges());
-		 System.out.println(outStr2);
-		 
+		 System.out.println(outStr2);	 
 	 }
-	 
  }
+ 
