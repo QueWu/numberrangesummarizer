@@ -59,11 +59,11 @@ import java.lang.StringBuilder;
 			 //check if the two elements are sequential, then make the range. 
 			 if(i!=0 && objArr.get(i)-objArr.get(i-1)==1)
 			 {
-				 if(tray.toString().equals(""))
+				 if(tray.toString().equals("")) //if tray is "empty"
 				 {
 					 tray.append(objArr.get(i-1).toString()).append("-").append(objArr.get(i).toString());
 				 }
-				 else if(!tray.toString().equals(""))
+				 else if(!tray.toString().equals("")) //if tray is not "empty"
 				 {
 					 //updates the maximum range.
 					 tray.replace(tray.indexOf("-")+1,tray.length(),objArr.get(i).toString());
